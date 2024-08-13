@@ -1,6 +1,7 @@
 {
   "dependencies": {
     "axios": "^1.7.3",
+    "blues-auth-lib": "^1.0.2",
     "cookie": "^0.6.0",
     "cookie-parser": "^1.4.6",
     "cors": "^2.8.5",
@@ -13,5 +14,6 @@
   "scripts": {
     "start": "node src/index.js"
   },
+  "type":"module",
   "name": "testing-sso"
 }

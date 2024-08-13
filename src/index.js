@@ -1,11 +1,16 @@
-const express = require('express');
-const cors = require('cors');
-const path = require('path');
-const SSOClient = require('./lib/ssolib'); 
-const dotenv = require('dotenv');
-dotenv.config();
+import express, { json, urlencoded } from 'express';
+import cors from 'cors';
+import { join, dirname } from 'path';
+import { fileURLToPath } from 'url';
+import SSOClient from 'blues-auth-lib';
+import { config } from 'dotenv';
+
+config();
 
 const app = express();
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 const ssoClient = new SSOClient({
     clientId: process.env.CLIENT_ID,
@@ -22,11 +27,11 @@ app.use(cors({
   credentials: true, // Necessary for sending credentials (Authorization header)
 }));
 
-app.use(express.json());
-app.use(express.urlencoded({ extended: true }));
+app.use(json());
+app.use(urlencoded({ extended: true }));
 
 // Set up view engine to render HTML pages
-app.set('views', path.join(__dirname, 'views'));
+app.set('views', join(__dirname, 'views'));
 app.set('view engine', 'ejs');
 
 // Home route (serves the main page)
