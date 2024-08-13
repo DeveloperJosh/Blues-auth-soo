@@ -34,23 +34,28 @@ const CALLBACK_URL = process.env.CALLBACK_URL;
 // Home route (simulates a protected page)
 app.get('/', (req, res) => {
   const token = req.cookies.token;
+
   if (!token) {
     return res.redirect('/login');
   }
-  if (token) {
-    axios.get(`${SSO_URL}/api/user/me`, {
-      headers: {
-        Authorization: `Bearer ${token}`
-      }
+
+  // This route fetches user data from the SSO service using the token (It requires read permissions)
+  axios.post(`${SSO_URL}/api/user/me`, {
+    client_id: CLIENT_ID,
+    client_secret: CLIENT_SECRET
+  }, {
+    headers: {
+      Authorization: `Bearer ${token}`
+    }
+  })
+    .then(response => {
+      res.render('index', { user: response.data });
     })
-      .then(response => {
-        res.render('index', { user: response.data });
-      })
-      .catch(error => {
-        console.error('Error fetching user data:', error);
-        res.redirect('/login');
-      });
-  }
+    .catch(error => {
+      console.error('Error fetching user data:', error);
+      res.clearCookie('token'); // Clear the cookie if the token is invalid
+      res.redirect('/login');
+    });
 });
 
 // Login route (redirects to SSO login)
@@ -62,14 +67,21 @@ app.get('/login', (req, res) => {
 // Callback route (receives the JWT token)
 app.get('/callback', (req, res) => {
   const token = req.query.token;
+
   if (token) {
     // Save the token in a cookie
     const isProduction = process.env.NODE_ENV === 'production';
-    res.cookie('token', token, { httpOnly: true, secure: isProduction });
+    res.cookie('token', token, { httpOnly: true, secure: isProduction, sameSite: 'Strict' });
     res.redirect('/');
   } else {
     res.status(400).send('Error: No token received');
   }
+});
+
+// Logout route (clears the token cookie)
+app.get('/logout', (req, res) => {
+  res.clearCookie('token');
+  res.redirect('/login');
 });
 
 // Start the server

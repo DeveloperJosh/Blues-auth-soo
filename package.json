@@ -11,13 +11,5 @@
   "scripts": {
     "start": "node src/index.js"
   },
-  "name": "testing-sso",
-  "module": "index.js",
-  "type": "module",
-  "devDependencies": {
-    "@types/bun": "latest"
-  },
-  "peerDependencies": {
-    "typescript": "^5.0.0"
-  }
+  "name": "testing-sso"
 }

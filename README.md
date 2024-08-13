@@ -1,119 +1,91 @@
-# Blue-Auth SSO Example
+# Blue-Auth SSO Integration Guide
 
-This is an example of how to use the Blue-Auth SSO service to authenticate users in a web application.
+This guide provides instructions on how to integrate the Blue-Auth SSO (Single Sign-On) service into your web application. By following this guide, you will be able to authenticate users through Blue-Auth and retrieve user data securely.
 
 ## Getting Started
 
-To get started, you will need to create an account on the Blue-Auth website and create a new application. You will need the client ID and client secret for your application.
+To begin, you need to create an account on the Blue-Auth website and register a new application to obtain the required credentials: **Client ID** and **Client Secret**.
 
-## How to use 
+## How to Use
 
 ### 1. **Create an Account on Blue-Auth**
-   - Visit the [Blue-Auth website](https://auth.blue-dev.xyz) and sign up for an account.
-   - Once registered, log in to your Blue-Auth account.
+- Visit the [Blue-Auth website](https://auth.blue-dev.xyz) and sign up for an account.
+- After registering, log in to your Blue-Auth account.
 
 ### 2. **Create a New Application**
-   - In your Blue-Auth dashboard, navigate to the "Home" section.
-   - Click on "Create New Application" and fill in the required details such as your application name and description.
-   - After creating the application, you will be provided with a **Client ID** and **Client Secret**. Make sure to keep these credentials secure as they are essential for integrating SSO with your application. (These will be emailed to you so make sure to check your email)
+- Navigate to the "Home" section of your Blue-Auth dashboard.
+- Click on "Create New Application" and fill out the required details such as your application's name and description.
+- Once your application is created, you will be given a **Client ID** and **Client Secret**. Make sure to keep these credentials safe as they are required to integrate SSO with your application.
 
 ### 3. **Set Up Redirect URLs**
-   - In your Blue-Auth SSO setup process, you will be provided with a callback URL that will be used to authenticate users on your site.
-   - Example: `https://yourwebsite.com/callback`.
+- During the setup process in Blue-Auth, specify the callback URL for your application. This URL is where users will be redirected after authentication.
+- Example of a callback URL: `https://yourwebsite.com/callback`.
 
-### 4. **Integrate Blue-Auth SSO in Your Web Application**
+### 4. **Make Requests to Blue-Auth**
 
-#### 4.1 **Backend Setup**
+To access protected resources from Blue-Auth, you need to include the following in every request:
 
-1. **Install Required Dependencies**
-   - If you're using Node.js and Express, install the necessary packages:
-     ```bash
-     npm install express axios cors dotenv
-     ```
+- **JWT Token**: The token provided to your application after a user authenticates.
+- **Client ID**: Your application's unique identifier.
+- **Client Secret**: Your application's secret key.
 
-2. **Create an Express Server**
-   - Set up a basic Express server to handle the authentication process.
-   - Use the following example as a starting point:
+### Example Request in Node.js
 
-   ```javascript
-   const express = require('express');
-   const cors = require('cors');
-   const axios = require('axios');
-   const path = require('path');
-   require('dotenv').config();
+Here is a simple example of how to make a request to Blue-Auth to retrieve user data using Node.js:
 
-   const app = express();
+```javascript
+const axios = require('axios');
 
-   // Enable CORS for requests from localhost:3000
-   app.use(cors({
-     origin: 'http://localhost:3000',
-     methods: ['GET', 'POST'],
-     allowedHeaders: ['Content-Type', 'Authorization'],
-   }));
+const CLIENT_ID = 'your_client_id';
+const CLIENT_SECRET = 'your_client_secret';
+const JWT_TOKEN = 'user_jwt_token'; // This is obtained after user authentication
 
-   app.use(express.json());
-   app.use(express.urlencoded({ extended: true }));
+axios.post('https://auth.blue-dev.xyz/api/user/me', {
+  client_id: CLIENT_ID,
+  client_secret: CLIENT_SECRET
+}, {
+  headers: {
+    Authorization: `Bearer ${JWT_TOKEN}`
+  }
+})
+.then(response => {
+  console.log('User Data:', response.data);
+})
+.catch(error => {
+  console.error('Error fetching user data:', error.response.data);
+});
 
-   // Set up view engine to render HTML pages
-   app.set('views', path.join(__dirname, 'views'));
-   app.set('view engine', 'ejs');
+```
 
-   // Client ID, Secret, and SSO URL
-   const CLIENT_ID = process.env.CLIENT_ID;
-   const CLIENT_SECRET = process.env.CLIENT_SECRET;
-   const SSO_URL = process.env.SSO_URL;
-   const CALLBACK_URL = process.env.CALLBACK_URL;
+### In this example:
 
-   // Home route (simulates a protected page)
-   app.get('/', (req, res) => {
-     const token = req.cookies.token;
-     if (!token) {
-       return res.redirect('/login');
-     }
+- Replace your_client_id and your_client_secret with the actual values provided by Blue-Auth.
+- Replace user_jwt_token with the JWT token you receive after the user authenticates.
 
-     axios.get(`${SSO_URL}/api/user/me`, {
-       headers: {
-         Authorization: `Bearer ${token}`
-       }
-     })
-       .then(response => {
-         res.render('index', { user: response.data });
-       })
-       .catch(error => {
-         console.error('Error fetching user data:', error);
-         res.redirect('/login');
-       });
-   });
+### 5. Important Notes
+The client_id and client_secret must be kept secure and should not be exposed in the client-side code.
+Ensure that your requests are made over HTTPS to protect the transmitted data.
 
-   // Login route (redirects to SSO login)
-   app.get('/login', (req, res) => {
-     const loginUrl = `${SSO_URL}/sso/login?client_id=${CLIENT_ID}&callback_url=${encodeURIComponent(CALLBACK_URL)}&client_secret=${CLIENT_SECRET}`;
-     res.redirect(loginUrl);
-   });
+### 6. Can i use Blue-Auth with my existing user database?
+Yes, you can integrate Blue-Auth with your existing user database by mapping the user data retrieved from Blue-Auth to your database schema. You can use the user's email address or unique identifier to match the user data from Blue-Auth with your database records.
 
-   // Callback route (receives the JWT token)
-   app.get('/callback', (req, res) => {
-     const token = req.query.token;
-     if (token) {
-       // Save the token in a cookie
-       res.cookie('token', token, { httpOnly: true, secure: true });
-       res.redirect('/');
-     } else {
-       res.status(400).send('Error: No token received');
-     }
-   });
+### 7. How can i try Blue-Auth SSO?
 
-   // Start the server
-   const PORT = process.env.PORT || 4000;
-   app.listen(PORT, () => {
-     console.log(`Server is running on port ${PORT}`);
-   });
+You can make your own client using the Blue-Auth API, or you can use the client provided in the this repository. To use the client, follow these steps:
 
-3. **Environment Variables**
-   - Create a `.env` file in your project directory and add the following environment variables:
-    ```plaintext
-    CLIENT_ID=YOUR_CLIENT_ID
-    CLIENT_SECRET=YOUR_CLIENT_SECRET`
-    SSO_URL=auth.blue-dev.xyz (no backslash)
-    CALLBACK_URL=YOUR_CALLBACK_URL (e.g., http://localhost:4000/callback no backslash)
-    ```
+- Clone the repository to your local machine.
+- Run `npm install` to install the required dependencies.
+- Create a `.env` file in the root directory of the project.
+- Add the following environment variables to the `.env` file:
+
+```plaintext
+CLIENT_ID=your_client_id
+CLIENT_SECRET=your_client_secret
+REDIRECT_URI=http://localhost:3000/callback
+```
+
+- Run `npm start` to start the client application.
+- Open your browser and navigate to `http://localhost:3000` to test the Blue-Auth SSO integration.
+
+# Conclusion
+By following these steps, you can securely integrate Blue-Auth SSO into your web application, allowing you to authenticate users and retrieve their data using the provided API.
