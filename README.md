@@ -15,7 +15,7 @@ To get started, you will need to create an account on the Blue-Auth website and 
 ### 2. **Create a New Application**
    - In your Blue-Auth dashboard, navigate to the "Home" section.
    - Click on "Create New Application" and fill in the required details such as your application name and description.
-   - After creating the application, you will be provided with a **Client ID** and **Client Secret**. Make sure to keep these credentials secure as they are essential for integrating SSO with your application. (These will be emailed to you, so make sure to check your email)
+   - After creating the application, you will be provided with a **Client ID** and **Client Secret**. Make sure to keep these credentials secure as they are essential for integrating SSO with your application. (These will be emailed to you so make sure to check your email)
 
 ### 3. **Set Up Redirect URLs**
    - In your Blue-Auth SSO setup process, you will be provided with a callback URL that will be used to authenticate users on your site.
