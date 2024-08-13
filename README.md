@@ -9,7 +9,7 @@ To get started, you will need to create an account on the Blue-Auth website and 
 ## How to use 
 
 ### 1. **Create an Account on Blue-Auth**
-   - Visit the [Blue-Auth website](#) and sign up for an account.
+   - Visit the [Blue-Auth website](https://auth.blue-dev.xyz) and sign up for an account.
    - Once registered, log in to your Blue-Auth account.
 
 ### 2. **Create a New Application**
