@@ -1,5 +1,7 @@
 # Blue-Auth SSO Integration Guide
 
+If you are looking for the docs, you can find them [here](https://wiki.mutable.ai/DeveloperJosh/Blues-auth-sso).
+
 This guide provides instructions on how to integrate the Blue-Auth SSO (Single Sign-On) service into your web application. By following this guide, you will be able to authenticate users through Blue-Auth and retrieve user data securely.
 
 ## Getting Started
