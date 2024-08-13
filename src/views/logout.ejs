@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Logout</title>
+    <style>
+        body {
+            background-color: #000000; /* Set background to black */
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+        }
+
+        .logout-button {
+            padding: 12px 24px;
+            background-color: #ff0000; /* Red background for logout */
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .logout-button:hover {
+            background-color: #e60000; /* Slightly darker red on hover */
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        .logout-button:active {
+            background-color: #cc0000; /* Even darker red on active */
+        }
+    </style>
+</head>
+<body>
+
+<button class="logout-button" onclick="logout()">Logout</button>
+
+<script>
+    function logout() {
+        // Remove the token from local storage
+        localStorage.removeItem('token');
+
+        // Redirect to homepage or another page
+        window.location.href = '/'; // Change '/' to the desired URL
+    }
+</script>
+
+</body>
+</html>

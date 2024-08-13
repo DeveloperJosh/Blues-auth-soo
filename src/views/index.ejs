@@ -4,18 +4,67 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SSO Test App</title>
+    <style>
+        body {
+            background-color: #000000; /* Set background to black */
+            color: #ffffff; /* Set text color to white */
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            text-align: center;
+        }
+
+        h1 {
+            font-size: 36px;
+            margin-bottom: 20px;
+        }
+
+        p {
+            font-size: 18px;
+            margin-bottom: 10px;
+        }
+
+        .logout-button {
+            padding: 12px 24px;
+            background-color: #ff0000; /* Red background for logout */
+            color: #ffffff;
+            font-size: 18px;
+            font-weight: 700;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+            margin-top: 20px;
+        }
+
+        .logout-button:hover {
+            background-color: #e60000; /* Slightly darker red on hover */
+            transform: scale(1.05); /* Slightly enlarge on hover */
+        }
+
+        .logout-button:active {
+            background-color: #cc0000; /* Even darker red on active */
+        }
+    </style>
 </head>
 <body>
     <h1 id="welcome">Welcome!</h1>
     <p id="email"></p>
     <p id="twoFactor"></p>
+    <button class="logout-button" onclick="logout()">Logout</button>
 
     <script>
         // Function to fetch user data from the server
         async function fetchUserData() {
             const token = localStorage.getItem('token');
+            console.log(token);
             if (!token) {
-                window.location.href = '/login';
+                //window.location.href = '/login';
                 return;
             }
 
@@ -41,6 +90,12 @@
                 console.error('Error fetching user data:', error);
                 window.location.href = '/login';
             }
+        }
+
+        // Function to handle logout
+        function logout() {
+            localStorage.removeItem('token');
+            window.location.href = '/login';
         }
 
         // Fetch user data when the page loads

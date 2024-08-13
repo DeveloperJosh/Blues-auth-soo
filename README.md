@@ -42,10 +42,10 @@ const JWT_TOKEN = 'user_jwt_token'; // This is obtained after user authenticatio
 
 axios.post('https://auth.blue-dev.xyz/api/user/me', {
   client_id: CLIENT_ID,
-  client_secret: CLIENT_SECRET
 }, {
   headers: {
-    Authorization: `Bearer ${JWT_TOKEN}`
+    Authorization: `Bearer ${JWT_TOKEN}`,
+    "X-Client-Secret": CLIENT_SECRET,
   }
 })
 .then(response => {
@@ -81,6 +81,7 @@ You can make your own client using the Blue-Auth API, or you can use the client 
 ```plaintext
 CLIENT_ID=your_client_id
 CLIENT_SECRET=your_client_secret
+SSO_URL=https://auth.blue-dev.xyz
 REDIRECT_URI=http://localhost:3000/callback
 ```
 
